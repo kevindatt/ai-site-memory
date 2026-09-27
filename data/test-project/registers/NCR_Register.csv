@@ -1,0 +1,3 @@
+ncr_id,project,location,subject,status,opened_date,related_wir,related_drawing
+NCR-031,Qubators Demo Project,Villa 43,Incorrect ceiling cove detail,Open,2026-09-19,WIR-1842,AR-043-Rev-C
+NCR-032,Qubators Demo Project,Level 2,Tile lippage,Closed,2026-09-16,,AR-L2-014-Rev-A

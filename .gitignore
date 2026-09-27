@@ -1,0 +1,33 @@
+﻿# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+build/
+.next/
+out/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Local IDE / OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Credentials / certificates
+*.pem
+*.key
+credentials.json
+secrets.json
+
+# Logs
+*.log
+
+# Local temporary files
+tmp/
+temp/

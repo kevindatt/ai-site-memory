@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Site Memory — Ask the Project · Design Preview</title>
+<style>
+  :root {
+    --bg: #e9edf1;
+    --panel: #ffffff;
+    --ink: #1c2b3a;
+    --muted: #5b6b7c;
+    --accent: #0b5fa5;
+    --accent-strong: #084a82;
+    --accent-soft: #e8f1f9;
+    --line: #d3dce3;
+    --header: #102a43;
+    --header-ink: #eef4f9;
+    --gold: #b98a2f;
+    --ok: #166534;
+    --ok-bg: #dcfce7;
+    --warn: #7a4a06;
+    --warn-bg: #fdf0d5;
+    --radius: 6px;
+    --font: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    --mono: "Cascadia Code", Consolas, "Courier New", monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+  }
+  .topbar {
+    background: var(--header);
+    color: var(--header-ink);
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 3px solid var(--gold);
+  }
+  .mark {
+    width: 52px; height: 52px; border-radius: 8px;
+    background: #ffffff; color: var(--header);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; letter-spacing: .04em; font-size: 1rem;
+    flex-shrink: 0;
+  }
+  .topbar h1 { margin: 0; font-size: 1.45rem; letter-spacing: .01em; }
+  .topbar p { margin: 2px 0 0; color: #b8c7d6; font-size: .92rem; }
+  .context {
+    background: var(--panel);
+    border-bottom: 1px solid var(--line);
+    padding: 12px 28px;
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    font-size: .92rem;
+  }
+  .context .label { color: var(--muted); text-transform: uppercase; font-size: .75rem; letter-spacing: .08em; }
+  .project-pill {
+    font-weight: 700; background: var(--header); color: #fff;
+    padding: 4px 14px; border-radius: 999px; font-size: .9rem;
+  }
+  .user-pill {
+    margin-left: auto; color: var(--muted); font-size: .85rem;
+  }
+  main { max-width: 900px; margin: 0 auto; padding: 26px 18px 60px; }
+  .ask-card, .answer-card, .tokens {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 20px 22px; margin-bottom: 18px;
+    box-shadow: 0 1px 3px rgba(30,41,59,.06);
+  }
+  .ask-card h2, .answer-card h2, .tokens h2 {
+    margin: 0 0 12px; font-size: 1.05rem;
+    text-transform: uppercase; letter-spacing: .06em; color: var(--muted);
+  }
+  .ask-row { display: flex; gap: 10px; }
+  .ask-row input {
+    flex: 1; font: inherit; padding: 12px 14px;
+    border: 1.5px solid var(--line); border-radius: 8px; background: #f7f9fb;
+  }
+  .ask-row input:focus { outline: 2px solid var(--accent); border-color: var(--accent); }
+  .btn-primary {
+    font: inherit; font-size: 1.05rem; font-weight: 800; color: #fff; cursor: pointer;
+    background: linear-gradient(180deg, #1780c4 0%, var(--accent) 55%, var(--accent-strong) 100%);
+    border: none; border-bottom: 3px solid #063a66; border-radius: 8px;
+    padding: 12px 38px; letter-spacing: .06em; text-transform: uppercase;
+    box-shadow: 0 2px 6px rgba(8, 74, 130, .35);
+    white-space: nowrap;
+  }
+  .btn-primary:hover { background: linear-gradient(180deg, #1f8cd4 0%, #0a5490 60%, #063a66 100%); box-shadow: 0 3px 9px rgba(8, 74, 130, .45); }
+  .btn-primary:focus-visible { outline: 3px solid #4aa3df; outline-offset: 2px; }
+  .btn-primary:active { transform: translateY(1px); border-bottom-width: 2px; box-shadow: 0 1px 3px rgba(8, 74, 130, .35); }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .chip {
+    font-size: .82rem; border: 1px solid var(--line); background: #f4f7fa;
+    border-radius: 999px; padding: 4px 12px; color: var(--muted);
+  }
+  .question {
+    border-left: 4px solid var(--accent);
+    background: #f4f8fc; padding: 10px 14px; border-radius: 0 8px 8px 0;
+    font-weight: 600; margin-bottom: 16px;
+  }
+  .status-line { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 4px 0 12px; }
+  .status-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-weight: 800; font-size: 1rem; letter-spacing: .02em;
+    background: var(--warn-bg); color: var(--warn);
+    border: 2px solid var(--gold); border-radius: 6px; padding: 6px 14px;
+    box-shadow: 0 1px 3px rgba(122, 74, 6, .18);
+  }
+  .status-badge::before {
+    content: ""; width: 10px; height: 10px; border-radius: 50%;
+    background: var(--gold); box-shadow: 0 0 0 3px rgba(185, 138, 47, .25);
+    flex-shrink: 0;
+  }
+  .verify-badge {
+    font-size: .8rem; background: var(--ok-bg); color: var(--ok);
+    border: 1px solid #86efac; border-radius: 6px; padding: 4px 12px; font-weight: 600;
+  }
+  dl.facts {
+    display: grid; grid-template-columns: 150px 1fr; gap: 6px 14px;
+    margin: 0 0 14px; font-size: .95rem;
+  }
+  dl.facts dt { color: var(--muted); }
+  dl.facts dd { margin: 0; font-weight: 600; }
+  dl.facts dd .mono { font-family: var(--mono); font-size: .88em; }
+  .rel-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 6px 0 14px; }
+  .rel {
+    font-family: var(--mono); font-size: .82rem; font-weight: 700;
+    background: #e8f1f9; color: #0b4a82; border: 1px solid #b9d4e8;
+    border-radius: 6px; padding: 4px 10px;
+  }
+  .evidence { background: #f6f9fc; border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; font-size: .88rem; }
+  .evidence h3 { margin: 0 0 6px; font-size: .8rem; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); }
+  .evidence ul { margin: 0; padding-left: 18px; }
+  .evidence li { margin: 2px 0; }
+  .evidence code { font-family: var(--mono); font-size: .82em; background: #dfe7ee; border-radius: 4px; padding: 1px 6px; }
+  .disclaimer {
+    margin-top: 14px; background: var(--warn-bg);
+    border: 1px solid #d9b45c; border-radius: 8px; padding: 10px 14px; font-size: .86rem;
+  }
+  .swatches { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+  .swatch { display: flex; align-items: center; gap: 8px; font-size: .82rem; color: var(--muted); }
+  .dot { width: 26px; height: 26px; border-radius: 6px; border: 1px solid rgba(0,0,0,.15); }
+  .type-sample h3 { margin: 14px 0 2px; font-size: 1.3rem; }
+  .type-sample p { margin: 4px 0; color: var(--muted); }
+  footer { text-align: center; color: var(--muted); font-size: .8rem; padding: 18px; }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="mark" aria-hidden="true">ASM</div>
+  <div>
+    <h1>AI Site Memory</h1>
+    <p>Ask the Project — construction project information &amp; status assistant</p>
+  </div>
+</header>
+
+<div class="context">
+  <span class="label">Project</span>
+  <span class="project-pill">Qubators Demo Project</span>
+  <span>Villa 43 · Townhouse 12 · Cafe · Levels 2–4</span>
+  <span class="user-pill">Signed in as Demo User (local prototype · synthetic data only)</span>
+</div>
+
+<main>
+  <!-- Ask input -->
+  <section class="ask-card" aria-label="Ask the project">
+    <h2>Ask the Project</h2>
+    <div class="ask-row">
+      <input type="text" value="What&rsquo;s the status of WIR-1842?" aria-label="Project question" />
+      <button class="btn-primary" type="button">Ask</button>
+    </div>
+    <div class="chips" aria-label="Suggested questions">
+      <span class="chip">Who is holding MIR-302?</span>
+      <span class="chip">Which NCR is related to WIR-1842?</span>
+      <span class="chip">Latest approved drawing for Villa 43 ceiling?</span>
+      <span class="chip">Show all overdue WIRs</span>
+    </div>
+  </section>
+
+  <!-- Sample answer -->
+  <section class="answer-card" aria-label="Sample AI response">
+    <h2>Project answer</h2>
+    <div class="question">&ldquo;What&rsquo;s the status of WIR-1842?&rdquo;</div>
+
+    <div class="status-line">
+      <span class="status-badge">WIR-1842 — Pending Consultant Review</span>
+      <span class="verify-badge">Verified from available project records</span>
+    </div>
+
+    <dl class="facts">
+      <dt>Location / Activity</dt><dd>Villa 43 · Ground Floor Ceiling Works</dd>
+      <dt>Submitted</dt><dd>18 Sep 2026</dd>
+      <dt>Current holder</dt><dd>Consultant QA</dd>
+      <dt>Review started</dt><dd>19 Sep 2026</dd>
+      <dt>Due date</dt><dd>21 Sep 2026</dd>
+      <dt>Latest drawing</dt><dd><span class="mono">AR-043 Rev C</span> — Approved 15 Sep 2026</dd>
+    </dl>
+
+    <h2>Related records</h2>
+    <div class="rel-row">
+      <span class="rel">NCR-031 · Open</span>
+      <span class="rel">AR-043 Rev C · Approved</span>
+      <span class="rel">RFI-077 · Closed</span>
+    </div>
+
+    <div class="evidence">
+      <h3>Evidence / Sources</h3>
+      <ul>
+        <li><code>WIR Register · WIR-1842</code> — status, dates, holder, due date</li>
+        <li><code>NCR Register · NCR-031</code> — open NCR: incorrect ceiling cove detail, Villa 43</li>
+        <li><code>Drawing Register · AR-043 Rev C</code> — approved Villa 43 ceiling detail</li>
+      </ul>
+    </div>
+
+    <div class="disclaimer">
+      AI-generated answers can contain mistakes. Verify important decisions against the
+      authoritative project records listed above.
+    </div>
+  </section>
+
+  <!-- Theme tokens demonstrated by this page -->
+  <section class="tokens" aria-label="Theme tokens">
+    <h2>Theme tokens used in this preview</h2>
+    <div class="swatches">
+      <span class="swatch"><span class="dot" style="background:#102a43"></span>Navy header #102a43</span>
+      <span class="swatch"><span class="dot" style="background:#0b5fa5"></span>Enterprise blue #0b5fa5</span>
+      <span class="swatch"><span class="dot" style="background:#b98a2f"></span>Restrained gold #b98a2f</span>
+      <span class="swatch"><span class="dot" style="background:#e9edf1"></span>Register gray #e9edf1</span>
+      <span class="swatch"><span class="dot" style="background:#ffffff"></span>Panel #ffffff</span>
+      <span class="swatch"><span class="dot" style="background:#fdf0d5"></span>Caution #fdf0d5</span>
+      <span class="swatch"><span class="dot" style="background:#dcfce7"></span>Verified #dcfce7</span>
+    </div>
+    <div class="type-sample">
+      <h3>Headings — semibold system sans, tight tracking</h3>
+      <p>Body — regular system sans at 1.55 line-height for dense site records; record IDs and source references use a monospace face (e.g. WIR-1842 · AR-043 Rev C).</p>
+    </div>
+  </section>
+</main>
+
+<footer>AI Site Memory · visual design preview · synthetic demo content only — not connected to live project systems.</footer>
+
+</body>
+</html>

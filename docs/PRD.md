@@ -645,6 +645,26 @@ Build the first product experience around the **Ask the Project** workflow using
 
 **Scope note:** This applies to the prototype only and does not prevent a future production framework change. The architecture must remain modular so that a future backend or production framework can be introduced without redesigning the core retrieval/relationship logic.
 
+### Steering change 06 — design.html visual refinement: Ask button prominence + status indicator hierarchy
+
+**Initial design state:** The `design.html` preview used a flat amber `Ask` button (same weight as surrounding elements) and a small pending-status badge (`.85rem`, 1px pale border, `#92400e` on `#fef3c7`).
+
+**Exact refinement requested:** Make the primary `Ask` button more visually prominent and improve the contrast/visual hierarchy of the project status indicator, without redesigning the page or adding functionality.
+
+**Reason:** The `Ask` action must read instantly as the primary user action, and the project status state must be recognizable at a glance in the answer card.
+
+**What was changed in design.html (CSS only, same palette/typography/layout):** the `Ask` button now uses an amber gradient, uppercase + wider tracking, larger padding, a darker bottom edge, drop shadow, and visible hover/focus/active states; the status badge is larger (`1rem`), uses a 2px `#d97706` border, darker `#78350e` text for stronger contrast, and a status-dot marker via `::before`.
+
+### Steering change 07 — Aconex-inspired enterprise theme for design.html
+
+**Review of the initial design:** The reviewer found the warm sand/amber `design.html` preview too informal — it read closer to a generic AI chatbot than to professional enterprise construction software.
+
+**Request:** Move the visual theme toward an Aconex-inspired enterprise construction-software aesthetic, using Aconex only as visual inspiration (color direction, professional feel, restraint, project-management character) without cloning its interface.
+
+**Reason:** The preview must feel like a credible enterprise construction platform so it can later guide the real application styling.
+
+**What was changed in design.html (styling/tokens only; concept, hierarchy, content and disclaimer preserved):** deep-navy header (`#102a43`) with a restrained gold rule (`#b98a2f`) and white product mark; enterprise-blue primary accent (`#0b5fa5`/`#084a82`) applied to the `Ask` button, question rail, links of emphasis and related-record pills; cool register-gray page ground (`#e9edf1`) with steel-gray text; sharper `6px` enterprise corner radius; caution/verified semantics kept but retuned (gold-bordered pending badge, `#d9b45c`-bordered disclaimer); theme-token swatch section updated to the new palette. Still fully self-contained with no external dependencies or assets.
+
 Additional material development steering decisions should be added chronologically below this section.
 
 ---

@@ -1,8 +1,12 @@
 /**
- * Shared project-knowledge types (Phase-0 scaffold).
+ * Shared project-knowledge types.
  * Mirrors PRD §12 primary entities + Tech Spec §4 data model.
- * Full CSV normalization lands with the functional MVP; these types fix the contract now.
  */
+
+export interface Project {
+  id: string;
+  name: string;
+}
 
 export interface Project {
   id: string;
@@ -34,10 +38,19 @@ export interface UserContext {
   projectIds: string[];
 }
 
+export interface AnswerFact {
+  label: string;
+  value: string;
+}
+
 export interface Answer {
   title: string;
   summary: string;
+  /** Key facts shown as a label/value grid, e.g. status, dates, holder. */
+  facts: AnswerFact[];
   relatedIds: string[];
   evidence: string[];
   verification: VerificationState;
+  /** Follow-up question shown under the answer (e.g. clarification prompts). */
+  followUp?: string;
 }

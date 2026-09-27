@@ -635,6 +635,16 @@ Build the first product experience around the **Ask the Project** workflow using
 
 **Reason:** The repository must remain safe for public access.
 
+### Steering change 05 — Prototype framework decision (2026-09-27)
+
+**Original choice/proposal:** React + Vite + TypeScript strict + plain CSS (per `docs/TECHNICAL_BUILD_SPEC.md` §3) versus Next.js (per PRD §18 recommendation for the hosted product).
+
+**Final decision:** Use React + Vite + TypeScript strict + plain CSS for the prototype. Do not switch to Next.js for this prototype.
+
+**Reason:** The first working product is a local single-page construction project information prototype. React + Vite provides the simplest and most maintainable implementation for the current scope, minimizes dependencies, requires no server or cloud infrastructure, and keeps the prototype cost at zero.
+
+**Scope note:** This applies to the prototype only and does not prevent a future production framework change. The architecture must remain modular so that a future backend or production framework can be introduced without redesigning the core retrieval/relationship logic.
+
 Additional material development steering decisions should be added chronologically below this section.
 
 ---

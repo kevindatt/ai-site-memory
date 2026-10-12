@@ -1,0 +1,3 @@
+user_id,display_name,project_ids,kinds,locations
+demo-user,Demo User — full project access,qubators-demo,,
+site-viewer,Site Viewer — WIRs drawings and documents for Villa 43 only,qubators-demo,WIR;Drawing;Document,Villa 43

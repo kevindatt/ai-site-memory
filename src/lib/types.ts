@@ -13,7 +13,7 @@ export interface Project {
   name: string;
 }
 
-export type RecordKind = "WIR" | "MIR" | "NCR" | "RFI" | "Submittal" | "Drawing" | "Document";
+export type RecordKind = "WIR" | "MIR" | "NCR" | "RFI" | "Submittal" | "Drawing" | "Document" | "Mail" | "Reference";
 
 export type VerificationState =
   | "Verified from available project records"
@@ -35,7 +35,16 @@ export interface ProjectRecord {
 
 export interface UserContext {
   userId: string;
+  displayName: string;
   projectIds: string[];
+  /**
+   * Undefined = full project access. Defined = restricted to matching records.
+   * The engine only sees records passing this scope (see applyScope).
+   */
+  scope?: {
+    kinds?: RecordKind[];
+    locations?: string[];
+  };
 }
 
 export interface AnswerFact {

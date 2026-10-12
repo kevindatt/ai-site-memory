@@ -31,3 +31,13 @@ secrets.json
 # Local temporary files
 tmp/
 temp/
+
+# Local Data Folder (Option 1): your real/exported project files live here.
+# Everything inside is git-ignored so company data is never committed,
+# except the committed README and TEMPLATE guides.
+local-data/*
+!local-data/README.md
+!local-data/TEMPLATE.md
+
+# Local Netlify folder
+.netlify

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">AI Site Memory</string>
+    <string name="title_activity_main">AI Site Memory</string>
+    <string name="package_name">com.qubators.aisitememory</string>
+    <string name="custom_url_scheme">com.qubators.aisitememory</string>
+</resources>

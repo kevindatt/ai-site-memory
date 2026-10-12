@@ -115,13 +115,279 @@ body {
   font-size: 0.82rem;
 }
 
+.user-select {
+  font: inherit;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: #fff;
+  padding: 2px 6px;
+  max-width: 320px;
+}
+
+.source-bar {
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+  padding: 8px 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+}
+
+.source-label {
+  font-weight: 600;
+}
+
+.source-status {
+  font-size: 0.78rem;
+  color: var(--ok);
+  border: 1px solid #86efac;
+  background: var(--ok-bg);
+  border-radius: 999px;
+  padding: 1px 10px;
+}
+
+.file-btn {
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 1px solid var(--accent);
+  color: var(--accent-strong);
+  border-radius: 999px;
+  padding: 3px 12px;
+  cursor: pointer;
+  background: var(--accent-soft);
+}
+
+.file-btn:hover {
+  background: #d7e7f5;
+}
+
+.file-input {
+  display: none;
+}
+
+.import-report {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--gold);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  display: grid;
+  gap: 4px;
+}
+
+.import-report ul {
+  margin: 4px 0;
+  padding-left: 18px;
+}
+
+.import-report summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.audit {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  font-size: 0.85rem;
+}
+
+.audit summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.audit-list {
+  margin: 10px 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+}
+
+.audit-user {
+  font-family: var(--mono);
+  font-size: 0.78em;
+}
+
+.audit-ok {
+  font-weight: 700;
+  color: var(--ok);
+}
+
+.audit-denied {
+  font-weight: 700;
+  color: #b91c1c;
+}
+
+.watch-list,
+.action-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.watch-row,
+.action-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: space-between;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #f7f9fb;
+  padding: 9px 12px;
+  font-size: 0.88rem;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.mini-btn {
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border: 1px solid var(--accent);
+  color: var(--accent-strong);
+  background: #fff;
+  border-radius: 5px;
+  padding: 4px 10px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.mini-btn:hover {
+  background: var(--accent-soft);
+}
+
+.status-pill {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-radius: 4px;
+  padding: 2px 8px;
+  border: 1px solid;
+}
+
+.status-proposed {
+  background: #f1f5f9;
+  color: #475569;
+  border-color: #94a3b8;
+}
+
+.status-approved {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  border-color: #93c5e8;
+}
+
+.status-rejected {
+  background: var(--unknown-bg);
+  color: var(--unknown);
+  border-color: #d9b45c;
+}
+
+.status-executed {
+  background: var(--ok-bg);
+  color: var(--ok);
+  border-color: #86efac;
+}
+
 .main {
-  max-width: 920px;
+  max-width: 1280px;
   width: 100%;
   margin: 0 auto;
   padding: 22px 16px 40px;
+}
+
+/* Two-pane workspace: 1/4 chat (left), 3/4 results (right). */
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(250px, 1fr) 3fr;
+  gap: 14px;
+  align-items: start;
+}
+
+.pane-left,
+.pane-right {
   display: grid;
   gap: 14px;
+  align-content: start;
+  min-width: 0;
+}
+
+/* Narrow left pane: stack the question input above the Ask button. */
+.pane-left .ask-row {
+  flex-direction: column;
+}
+
+.pane-left .btn-primary {
+  width: 100%;
+}
+
+.history-list {
+  display: grid;
+  gap: 6px;
+}
+
+.history-chip {
+  text-align: left;
+  white-space: normal;
+}
+
+@media (max-width: 900px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Hourglass loading overlay with caption. */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(16, 42, 67, 0.55);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  z-index: 1000;
+}
+
+.hourglass {
+  font-size: 64px;
+  animation: hourglass-turn 1.6s ease-in-out infinite;
+}
+
+@keyframes hourglass-turn {
+  0% {
+    transform: rotate(0deg);
+    opacity: 1;
+  }
+  50% {
+    transform: rotate(180deg);
+    opacity: 0.75;
+  }
+  100% {
+    transform: rotate(360deg);
+    opacity: 1;
+  }
+}
+
+.loading-caption {
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
 }
 
 .ask-panel,

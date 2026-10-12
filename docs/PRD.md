@@ -665,6 +665,24 @@ Build the first product experience around the **Ask the Project** workflow using
 
 **What was changed in design.html (styling/tokens only; concept, hierarchy, content and disclaimer preserved):** deep-navy header (`#102a43`) with a restrained gold rule (`#b98a2f`) and white product mark; enterprise-blue primary accent (`#0b5fa5`/`#084a82`) applied to the `Ask` button, question rail, links of emphasis and related-record pills; cool register-gray page ground (`#e9edf1`) with steel-gray text; sharper `6px` enterprise corner radius; caution/verified semantics kept but retuned (gold-bordered pending badge, `#d9b45c`-bordered disclaimer); theme-token swatch section updated to the new palette. Still fully self-contained with no external dependencies or assets.
 
+### Steering change 08 — Conversational chatbot enhancement + real-file support
+
+**Initial state:** Single-question Ask interface over synthetic CSVs with fixed demo intents.
+
+**Instruction:** Evolve into a conversational, evidence-based project chatbot: follow-up context (pronouns, clarification memory), awaiting-review listings, correspondence discovery, record comparison with conflict detection, counts/summaries, timelines, monitoring, approval-gated simulated actions — plus real-file ingestion (header-row detection, header-variant mapping, location composition, Excel date cleaning, revision families, verbatim statuses).
+
+**Reason:** Qubators AI Foundry assessment requires a chatbot over flexible document sources; pilot validation used the user's real Aconex-style registers, which exposed (and the engine now handles) title rows, variant headers, composed locations, serial dates, and repeated ids across revisions.
+
+**Scope note:** Deterministic local retrieval only — no LLM, no model-generated facts. All chatbot wording is template-built from retrieved records.
+
+### Steering change 09 — PWA preparation for assessment submission
+
+**Instruction:** Prepare and verify the app as an installable PWA (manifest, icons, versioned service worker with app-shell-only caching, offline-safe behavior, mobile layout) for assessment-portal submission; APK planning only (Capacitor assessment, no build yet).
+
+**Reason:** Assessment requires an installable submission and a future Android path via QubDrive.
+
+**Scope note:** Service worker caches versioned app-shell assets only — never document contents, tokens, or audit data. Live deployment stays frozen as the Lesson 9 baseline until explicitly approved.
+
 Additional material development steering decisions should be added chronologically below this section.
 
 ---
@@ -1131,3 +1149,72 @@ This is intended to prevent unexpected cost escalation while the business model 
 - Removed temporary/non-product implementation context from the product requirements.
 - Expanded monetization alternatives while retaining per-active-project subscription as the current hypothesis.
 - Added source-agnostic architecture and enterprise connectivity roadmap requirements.
+
+---
+
+# 31. Phase-2 Enhancement Addendum (Conversational Chatbot + PWA)
+
+## 31.1 Conversational experience
+
+The app is a project chatbot: natural-language questions, follow-ups with
+pronoun resolution ("its drawing") and clarification memory, and answers
+built ONLY from retrieved records. Every factual answer shows status/facts,
+related records, source evidence with IDs/revisions/dates, and one of
+Verified / Inferred / Cannot verify / Clarification required. Ambiguous
+queries trigger targeted clarification; missing, conflicting, inaccessible
+or outdated information is stated as such. Document statuses, revisions,
+dates, holders, comments and reasons are never invented.
+
+## 31.2 Capabilities and verification states
+
+Status/holder/relationship/history/timeline lookup (Verified); counts,
+summaries, overdue and attention analysis (Verified numbers, Inferred
+judgments); awaiting-consultant-review listings; correspondence discovery
+via explicit links and tagged notes; record comparison with deterministic
+conflict detection (status disagreement, superseded references, date
+sanity); monitoring watchers with acknowledgement; approval-gated SIMULATED
+actions (propose → approve/reject → execute, audit-logged, no external
+system ever touched); permission-denied answers with audit entries.
+
+## 31.3 Local-folder import and refresh
+
+User-selected CSV/XLSX/MD/TXT files (PDFs indexed by name only) are
+imported, header-detected, cleaned (variant mapping, location composition,
+date normalization, revision families, verbatim statuses) and validated
+with diagnostics; per-file reports, refresh with change deltas, import
+timestamps, stale labelling, 25 MB per-file cap, and malformed-file refusal.
+Session-only retention; source notes stay synthetic unless supplied.
+
+## 31.4 Connectors (see docs/CONNECTORS.md)
+
+Implemented: synthetic bundle, local files. Planned (design + prerequisites
+documented, NOT built): OneDrive (Entra app, Files.Read.Selected), Google
+Drive (Cloud project, drive.file scope), Aconex (Oracle-registered
+integration, Lobby OAuth, project API enablement), Egnyte (developer key,
+server-side OAuth). Least privilege, user-selected folders, token safety,
+revocation-as-disconnect throughout.
+
+## 31.5 Authentication, permissions, security, audit, retention
+
+Permissions are enforced before retrieval via a scope model currently fed by
+a local access-control mapping (production: IdP/SSO binding). Audit covers
+questions, decisions, imports, connector activity and action lifecycle, kept
+on-device. Imported document text is treated as untrusted content, never as
+instructions. Service worker caches versioned app-shell assets only — never
+document contents, tokens, or audit data. Retention today is session-only.
+
+## 31.6 Implemented vs planned vs unverified
+
+Implemented AND tested: everything in §§31.1–31.3, PWA shell (manifest,
+icons, versioned service worker, offline-safe local operation). Simulated:
+action execution. Planned (not built): cloud/enterprise connectors,
+server-side secrets, production auth/billing, PDF content extraction, APK
+build. Unverified until a real device check: PWA install prompt behaviour.
+
+## 31.7 Sequence and acceptance
+
+Milestones: audit → chatbot + local sources → connector readiness →
+verification → PWA → (approval-gated) publish → APK planning. Acceptance:
+typecheck clean, production build clean, full test suite green, eval set
+green (UC + chatbot + conflict + ambiguity + follow-up cases), real-file
+ingestion validated, installability checklist complete on a real device.

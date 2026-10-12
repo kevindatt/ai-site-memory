@@ -1,0 +1,20 @@
+# AI Site Memory — Netlify deployment (Phase E1, static pilot).
+# Build settings mirror package.json: `npm run build` emits dist/.
+# The SPA redirect keeps the single-page app routable on refresh.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Future backend (Phase E, only when needed):
+# - Netlify Functions would live in netlify/functions/ (not created yet).
+# - Database, auth and payment keys arrive exclusively via the Netlify
+#   dashboard (Site settings > Environment variables) — never in this repo.

@@ -136,3 +136,49 @@ These are later implementation choices, not dependencies of the local prototype.
 ## 12. Definition of done
 
 The application opens locally, allows a user to ask the demonstration questions, returns the intended synthetic results, shows evidence/relationships, and demonstrates clarification and uncertainty behavior.
+
+---
+
+## 13. Phase-2 Enhancement: conversational chatbot (implemented)
+
+Deterministic intent router (`src/lib/respond.ts`) over scoped register
+views: status/holder/relations/history/timeline, counts, attention analysis,
+awaiting-review, correspondence, compare-with-conflict-detection, monitoring
+summaries, and approval-gated simulated actions. Pronoun follow-ups resolve
+via the last discussed record (`primaryId`). No LLM: all wording is
+template-built from retrieved records with Verified / Inferred /
+Cannot verify / Clarification required states.
+
+## 14. Phase-2 Enhancement: real-file data cleaning (implemented)
+
+- RFC-4180 CSV parsing (quoted commas/quotes/newlines).
+- Header-row detection across title/meta rows; per-register required-column
+  scoring by fraction; explicit-id strength + filename tie-breaks.
+- Header-variant mapping with positional rules (first status wins `status`,
+  later ones `consultant_status`; first submit-like wins the submission date,
+  consultant/engineer ones `review_started`); unmapped columns reported.
+- Location composition from zone/venue/level parts; Excel serial + date
+  string normalization (ambiguous formats untouched); revision families with
+  latest-wins; statuses kept verbatim; multi-link cells split; NA
+  placeholders dropped; repeated ids+revisions warned, not hidden.
+- Optional columns: `revision`, `review_started`, `consultant_status`
+  (WIR/MIR/RFI/Drawing/Submittal); `issue_date` and WIR `due_date` optional.
+- 25 MB per-file cap; malformed/oversized files refused with reasons.
+
+## 15. Phase-2 Enhancement: PWA (implemented, device check pending)
+
+`public/manifest.webmanifest` (name, short name, start URL, scope,
+standalone display, theme/background, 192 + 512 PNG icons generated
+offline), hand-written `public/sw.js` (versioned app-shell cache, old-cache
+cleanup, network-first navigations with offline fallback, NEVER caches
+document contents/tokens/audit), registration in `main.tsx`, theme-color
+meta + iOS tags, mobile-responsive chat layout. Automated checks assert
+manifest validity, icon dimensions, and the SW allowlist; the real-device
+install-prompt test remains a manual checklist step.
+
+## 16. Connector readiness (docs/CONNECTORS.md)
+
+Common `SourceConnector` lifecycle (connect/list/refresh/markStale/
+disconnect) implemented for synthetic + local-files. OneDrive, Google
+Drive, Aconex and Egnyte are designed with auth flows, least-privilege
+scopes, prerequisites and implementation steps — none built, none claimed.

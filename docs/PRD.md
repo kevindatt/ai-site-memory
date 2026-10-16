@@ -683,6 +683,30 @@ Build the first product experience around the **Ask the Project** workflow using
 
 **Scope note:** Service worker caches versioned app-shell assets only — never document contents, tokens, or audit data. Live deployment stays frozen as the Lesson 9 baseline until explicitly approved.
 
+### Steering change 10 — Local alec.ae login gate + minimal main page (2026-10-15)
+
+**Instruction:** Landing page becomes a Log in / Create account gate (email + password, 5-char minimum, only `@alec.ae` accepted, exact error `Un-registered email or password` otherwise). Main page shows email-only identity, short status phrases (`Demo data`, `N records`, `Loading…`/`Searching…`), smooth Ask-to-answer transition, latest search on top, and Monitoring/actions/logs hidden behind a collapsed Advanced toggle.
+
+**Reason:** User-requested refinement for pilot cleanliness and device demo; defers production identity while keeping the PRD §16 permission-before-retrieval boundary intact.
+
+**Scope note:** Accounts are demo-hashed in browser localStorage only (offline/APK-safe). Production path is Better Auth free tier + PostgreSQL with server-side hashing/SSO binding — not built here. No push/deploy/release without explicit approval.
+
+### Steering change 11 — Admin master controls for kdatt@alec.ae (2026-10-16)
+
+**Instruction:** All `@alec.ae` logins keep full-access internal demo scope. `kdatt@alec.ae` gets an Admin panel: list local accounts, restrict / allow / remove emails (restricted logins show `Un-registered email or password`; admin is exempt and protected), plus Clear log and Reset data shortcuts.
+
+**Reason:** User-requested master control for pilot access management without a backend yet.
+
+**Scope note:** Blocklist is local-only (`asm-auth-restricted-v1`); production moves to Better Auth + PostgreSQL user/role tables.
+
+### Steering change 12 — Super-Search + dashboards + admin tabs (2026-10-16)
+
+**Instruction:** (1) Ask panel rebranded Super-Search with keyword/MIR/WIR/venue/location hint, demo chips removed; (2) full-text Boolean super-search (`AND` space, `OR`, `-NOT`/`NOT`, `"phrase"`) over IDs (full + partial fragments), all metadata and indexed note content, short tokens ID-scoped so `IN`/`8` match `AFO-IN-000008`; unique hit answers directly, multi-hit grouped file-wise (Verified), partial-only falls back to Inferred keyword matches; (3) users get a left-pane Dashboard button (WIR/MIR by-status tables + dependency-free SVG bars); (4) admin gets top tabs Super-search / Files & stats (file names, sizes, counts) / Users; (5) Postgres + Better Auth confirmed NOT integrated — localStorage seam only.
+
+**Reason:** User-requested refinement; Excel content was already read correctly — the old tokenizer dropped ≤2-char tokens and required trigger words, so fragments never matched.
+
+**Scope note:** No new dependencies, no backend, no push/deploy without explicit approval.
+
 Additional material development steering decisions should be added chronologically below this section.
 
 ---

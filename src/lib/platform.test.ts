@@ -42,12 +42,19 @@ describe("Phase B boundaries", () => {
     expect(keywordSearch(store, "xyzzy plugh")).toEqual([]);
   });
 
-  it("answers unmatched topical questions as inferred keyword matches with usage", () => {
+  it("answers full-text topical queries as verified super-search results with usage", () => {
     const result = answerQuestion("ceiling works", store, null);
-    expect(result.answer.verification).toBe("Inferred from available project records");
+    expect(result.answer.verification).toBe("Verified from available project records");
+    expect(result.answer.title).toContain("Super-search");
     expect(result.answer.relatedIds).toContain("WIR-1842");
     expect(result.usage.evidenceRefs).toBeGreaterThan(0);
     expect(result.usage.estimatedTokens).toBeGreaterThan(0);
+  });
+
+  it("answers partial topical queries as inferred keyword matches with usage", () => {
+    const result = answerQuestion("ceiling xyzzy", store, null);
+    expect(result.answer.verification).toBe("Inferred from available project records");
+    expect(result.usage.evidenceRefs).toBeGreaterThan(0);
   });
 
   it("keeps unknown named records as cannot-verify (no keyword papering-over)", () => {

@@ -33,6 +33,7 @@ import {
 } from "./retrieval";
 import type { KeywordHit } from "./retrieval";
 import { estimateTokens, fitEvidence } from "./budget";
+import { advancedSearch, queryHasSubstance } from "./advancedSearch";
 import { pickLatestApproved } from "./precedence";
 import { applyScope, getDemoUser } from "./access";
 import type { Answer, AnswerFact, ProjectRecord, UserContext, VerificationState } from "./types";
@@ -1190,17 +1191,53 @@ function routeQuestion(
     return { answer: unrecordedAnswer(), pending: null };
   }
 
-  // Keyword fallback (Phase B2): only when no id-like token was named at all.
-  // Named-but-unknown records stay "cannot verify" so typos and unknown
-  // records are never papered over with loose keyword matches.
+  // Named-but-unknown IDs (typos, WIR-9999) skip loose matching entirely.
   const unresolvedIdLike = [...rawIdTokens].some(
     (token) => token.length >= 4 && !knownIds.includes(token)
   );
+
+  // Super-search: full-text + boolean + partial ID fragments, no trigger
+  // words required (raw "AFO-IN-000008", "IN" or "8" work). Runs AFTER the
+  // specific intents above (counts, attention, summary, compare, unrecorded)
+  // so those answers are never hijacked by keyword matching.
+  const superHits = unresolvedIdLike ? [] : advancedSearch(view, question);
+  if (superHits.length === 1 && superHits[0] !== undefined) {
+    const only = superHits[0].record.id;
+    // A unique hit answers directly — same contract as descriptive search.
+    if (view.getRecord(only) !== undefined) {
+      return { answer: genericStatusAnswer(only, view), pending: null };
+    }
+  }
+  if (superHits.length > 0) {
+    return {
+      answer: renderGroupedResults(superHits, "Super-search results", "Verified from available project records"),
+      pending: null
+    };
+  }
+
+  // Partial fallback (Phase B2): AND-query matched nothing, but individual
+  // keywords may still match — reported as inferred, never verified.
+  // Named-but-unknown records stay "cannot verify" so typos and unknown
+  // records are never papered over with loose keyword matches.
   if (knownIds.length === 0 && !unresolvedIdLike) {
     const hits = keywordSearchAll(view, question);
     if (hits.length > 0) {
       return { answer: keywordAnswer(hits), pending: null };
     }
+  }
+  if (!unresolvedIdLike && queryHasSubstance(question) && knownIds.length === 0) {
+    const total = view.listRecords().length;
+    return {
+      answer: {
+        title: "Keyword not found",
+        summary: `keyword not found — this cannot be verified from the available project records. Try another keyword. Operators: AND (space), OR, -NOT, "exact phrase". (Searched ${total} records across all loaded files.)`,
+        facts: [],
+        relatedIds: [],
+        evidence: [],
+        verification: "Cannot verify from available project records"
+      },
+      pending: null
+    };
   }
 
   return { answer: fallbackAnswer(), pending: null };
